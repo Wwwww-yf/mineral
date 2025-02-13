@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Data Prediction</h1>
+        <!-- 特征列说明 -->
+        <div class="alert alert-info">
+            <strong>Required Features:</strong> SiO2, Al2O3, MgO, FeO, MnO, CaO, K2O, Na2O, TiO2, Cr2O3, P2O5, BaO(If colum is missing, the default value is 0)
+        </div>
+        <!-- 输入表单 -->
+        <form method="POST" enctype="multipart/form-data" class="mt-4">
+            {{ form.hidden_tag() }}
+            <textarea class="form-control mb-3" name="data" rows="10" placeholder="Paste CSV data here..."></textarea>
+            <input type="file" name="datafile" class="form-control mb-3">
+            <button type="submit" class="btn btn-primary w-100">Submit</button>
+        </form>
+
+        <!-- 显示预测结果 -->
+        {% if predictions %}
+        <div class="d-flex justify-content-between align-items-center mt-5">
+            <h2>Predictions:</h2>
+            <form method="POST" action="/download">
+                <input type="hidden" name="exported_csv" value="{{ exported_csv }}">
+                <button type="submit" class="btn btn-success">Download</button>
+            </form>
+        </div>
+        <ul class="list-group mt-3">
+            {% for prediction in predictions %}
+                <li class="list-group-item">{{ prediction }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <!-- 显示消息 -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} mt-4">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
